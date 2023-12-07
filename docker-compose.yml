@@ -3,11 +3,11 @@ services:
   mongo:
     image: mongo
     ports:
-      - "27017:27017"
+      - "27018:27018"
   app:
     build: .
     ports:
-      - "8080:8080"
+      - "8000:8000"
     volumes:
       - my_volume:/app/public/images/
 

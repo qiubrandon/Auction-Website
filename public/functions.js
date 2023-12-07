@@ -162,9 +162,10 @@ function convertMS(ms) {
   };
 }
 
-function welcome() {
+async function welcome() {
   verification();
-  console.log("HELLO");
+  const all_auctions = await fetch("/get-all-auctions");
+  await listing_loop(all_auctions);
 }
 
 async function send_data_and_update() {
@@ -214,7 +215,6 @@ async function send_data_and_update() {
     } else if (request.status === 409) {
       document.getElementById("error_form").innerText =
         "Error has occured trying to bid. Please refresh your page!";
-      location.reload();
     }
   };
   request.send(JSON.stringify(data));

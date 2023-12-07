@@ -1,0 +1,11 @@
+# pack-refs with: peeled fully-peeled sorted 
+2db27925c40e6440143bf0a9f0048f609268862d refs/heads/EmailVerification
+16f48dba8f56e3190175612c0ace98e59244d044 refs/heads/ascher
+761ec84748cd297a5cb5b901a0c810c5dab92da7 refs/heads/drboyle2
+6bd11fa01e2ad03e28a250a65c94eb295588f4be refs/heads/fahad
+62b852e554eececdb5a0f047816f142bea5e826b refs/heads/fahadPart3
+75bc07bc52cdff4b560b1b5b2e5c88a669648a23 refs/heads/item_auctions
+3abea91333e3daacd9274ac4df1b64c0363d4a89 refs/heads/main
+576039f275151e6bf5cefbdbf77f5e10fe821c0d refs/heads/mongoBranch
+95621ee4f3ec615abe292860eb16eae23c1818c3 refs/heads/oldMain
+95dcd13cc6d321ce23966ba45d54a115f9c1063a refs/heads/profilePage

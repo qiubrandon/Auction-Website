@@ -16,7 +16,7 @@ const process = require("process");
 const nodemailer = require("nodemailer");
 const uuid = require("uuid");
 //port
-const port = 8080;
+const port = 8000;
 
 // middlewares
 const setHeaders = function (req, res, next) {
@@ -90,7 +90,7 @@ app.use(limiter);
 // connect to mongo
 // useNewUrlParser: uses newer parser instead of legacy one
 // useUnifiedTopology: use new topology engine
-mongo.connect("mongodb://mongo:27017/312Not-Local", {
+mongo.connect("mongodb://mongo:27018/312Not-Local", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -289,7 +289,7 @@ async function token_checker(token) {
 //   return jString;
 // }
 async function getAllItems() {
-  const posts = await auctions.find({});
+  const posts = await Auctions.find();
   //const jString = JSON.stringify(posts);
   return posts;
 }
@@ -518,6 +518,11 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.get("/get-all-auctions", async (req, res) => {
+  const all = await getAllItems();
+  res.send(all);
+});
+
 // Define a route for email verification
 app.get("/verify", (req, res) => {
   const { token } = req.query;
@@ -619,7 +624,7 @@ app.post("/new-bid", async (req, res) => {
   let db_bid = auc_from_id["current_bid"][1];
 
   if (bid <= db_bid) {
-    res.status(409).send();
+    return res.status(409).send();
   }
 
   await update_bid(user, bid, id);
