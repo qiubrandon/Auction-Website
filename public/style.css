@@ -76,3 +76,23 @@ body {
   color: black;
   padding: 20px 0;
 }
+
+#listing-button {
+  display: flex;
+  justify-content: flex-end;
+  background-color: rgb(32, 227, 32); /* Button background color */
+  color: white; /* Text color */
+  border: none; /* Remove default border */
+  padding: 5px 10px; /* Vertical and horizontal padding */
+  text-align: center; /* Center the text */
+  text-decoration: none; /* Remove underline from text */
+  display: inline-block; /* Align it inline with other elements */
+  font-size: 16px; /* Set font size */
+  border-radius: 15px; /* Rounded corners */
+  cursor: pointer; /* Change mouse cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.listing-button:hover {
+  background-color: darkgreen; /* Darker shade when hovered */
+}

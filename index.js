@@ -15,8 +15,13 @@ const { identity } = require("lodash");
 const process = require("process");
 const nodemailer = require("nodemailer");
 const uuid = require("uuid");
+const expressWs = require("express-ws")(app);
+
 //port
 const port = 8000;
+
+//websocket connections
+connected = [];
 
 // middlewares
 const setHeaders = function (req, res, next) {
@@ -90,7 +95,7 @@ app.use(limiter);
 // connect to mongo
 // useNewUrlParser: uses newer parser instead of legacy one
 // useUnifiedTopology: use new topology engine
-mongo.connect("mongodb://mongo:27018/312Not-Local", {
+mongo.connect("mongodb://mongo:27017/312Not-Local", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -178,7 +183,15 @@ async function add_new_auction(
     });
 
     await new_auction.save();
-    console.log("New auction created! \n", new_auction);
+
+    connected.forEach((client) => {
+      console.log("client", client);
+      if (client.readyState === WebSocket.OPEN) {
+        console.log("client with open socket", client);
+        client.send(JSON.stringify(new_auction));
+      }
+    });
+
     return new_auction.id; // return id for redirection purposes
   } catch (error) {
     console.log("Error saving new auction: ", error);
@@ -188,15 +201,9 @@ async function add_new_auction(
 
 async function update_bid(user, bid, id) {
   if (user && bid && id) {
-    const doc = await Auctions.findOne({ id: id });
     //const pH = doc.price_history;
     let esc_user = await escapeHTML(user);
     let esc_bid = await escapeHTML(bid);
-    let esc_id = await escapeHTML(id);
-
-    console.log("Auction found", await Auctions.findOne({ id: id }));
-    // console.log("PH", pH);
-    // pH[Date.now()] = { bidder: user, price: bid };
     await Auctions.findOneAndUpdate(
       { id: id },
       {
@@ -370,11 +377,19 @@ app.get("/visit-counter", (req, res) => {
   }
   res.sendFile(path.join(__dirname, "public", "visit-counter.html"));
 });
+
 //gets
 app.get("/", (req, res) => {
   const filePath = path.join(__dirname, "public", req.path);
   res.sendFile(filePath);
 });
+
+app.ws("/", async (ws, req) => {
+  connected.push(ws);
+  ws.on("close", () => {
+    connected = connected.filter((client) => client !== ws);
+  });
+}); // default page ws
 
 app.get("/user_check", (req, res) => {
   const username = req.cookies["username"];
@@ -518,9 +533,9 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/get-all-auctions", async (req, res) => {
-  const all = await getAllItems();
-  res.send(all);
+app.get("/settled-auctions", async (req, res) => {
+  const all = await Auctions.find();
+  res.send(JSON.stringify(all));
 });
 
 // Define a route for email verification
@@ -547,12 +562,6 @@ app.get("/verify", (req, res) => {
     console.log("big error");
   }
 });
-// app.get("/verificationStat", async (req, res) => {
-//   console.log(items);
-
-//   res.send(JSON.stringify(items));
-// });
-
 app.post("/make-post", bodyParser.json(), (req, res) => {
   console.log(req.body["title"]);
   title = req.body["title"];
@@ -668,11 +677,8 @@ app.post("/submit-auction", img_save.single("item_image"), async (req, res) => {
   }
   //let fiveHoursFromNow = Date.now() + 5 * 60 * 60 * 1000;
   if (auction_end < Date.now()) {
-    console.log("Creation date of auction", auction_end);
-    console.log("CUrrent date", Date.now());
     return res.status(400).send("Enter a valid date!");
   }
-  console.log("auction end time", req.body.auction_end_time);
   let converted_length = auction_end - Date.now(); // endtime - curr = length
   let id = await add_new_auction(
     username,
@@ -683,6 +689,7 @@ app.post("/submit-auction", img_save.single("item_image"), async (req, res) => {
     converted_length
   );
   let url = req.protocol + "://" + req.get("host") + "/auction-page?id=" + id;
+
   res.status(200).redirect(url);
 });
 

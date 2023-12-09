@@ -1,5 +1,59 @@
 // const { verify } = require("jsonwebtoken");
 
+const path = window.location.pathname;
+
+async function welcome() {
+  verification();
+  const all_auctions = await fetch("/settled-auctions");
+  const data = await all_auctions.json();
+  console.log(data);
+  for (let listing of data) {
+    console.log("Listing", listing);
+    let l = await create_listing(listing);
+    document.getElementById("listings").append(l);
+  }
+  await openConn(path);
+}
+
+async function create_listing(data) {
+  let item_name = data["item_name"];
+  let seller = data["seller"];
+  let [bidder, price] = data["current_bid"];
+  let id = data["id"];
+  let div = document.createElement("div");
+  div.innerHTML = ` Item name: <strong>${item_name}</strong></br> Highest bid: <strong>$${price}, ${bidder}</strong> </br> Seller: <strong>${seller}</strong>  `;
+
+  let button = document.createElement("button");
+  button.innerHTML = "To Auction";
+  button.setAttribute("id", "listing-button");
+  button.onclick = async () => {
+    var host = window.location.protocol + "//" + window.location.host;
+    window.location.href = host + "/auction-page?id=" + id;
+  };
+  div.appendChild(button);
+  div.innerHTML += "</br>";
+  return div;
+}
+
+async function openConn(path) {
+  const socket = new WebSocket(
+    "ws://" + window.location.hostname + ":" + window.location.port + path
+  );
+
+  socket.addEventListener("open", async () => {
+    console.log("websocket connection opened!");
+  });
+  socket.addEventListener("message", async (event) => {
+    const data = event.data;
+    console.log("new auction made!", data);
+    let new_div = await create_listing(data);
+    document.getElementById("listings").append(new_div);
+  });
+  socket.addEventListener("close", () => {
+    socket.close();
+  });
+}
+
 function cookie_fetch(name) {
   let cookies = document.cookie.split("; "); // doc cookie returns {cookiename=cookie; cookiename2=cookie2; ...}
   for (let cookie of cookies) {
@@ -160,12 +214,6 @@ function convertMS(ms) {
     minutes: minutes,
     seconds: seconds,
   };
-}
-
-async function welcome() {
-  verification();
-  const all_auctions = await fetch("/get-all-auctions");
-  await listing_loop(all_auctions);
 }
 
 async function send_data_and_update() {
