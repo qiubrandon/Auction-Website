@@ -20,14 +20,14 @@
           </button>
         </div>
 
-        <div class="active-listings">
+        <!-- <div class="active-listings">
           <button
             id="active-listings-button"
             onclick="redirectActiveAuctions()"
           >
             View Active Listings
           </button>
-        </div>
+        </div> -->
 
         <div class="my-auctionsCreated">
           <button
@@ -53,9 +53,11 @@
 
     <div class="contents">
       <div id="settled-listings">
-        <div id="listings">
-          <h3>Settled Auctions</h3>
-        </div>
+        <h3 id="settled-listings-title">All auctions!</h3>
+        <p style="color: red">* finished</p>
+        <p style="color: green">* ongoing</p>
+
+        <div id="listings"></div>
       </div>
 
       <div class="user-list">

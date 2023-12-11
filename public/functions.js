@@ -1,6 +1,7 @@
 // const { verify } = require("jsonwebtoken");
 
 const path = window.location.pathname;
+curr_auction_done = false;
 
 async function welcome() {
   verification();
@@ -20,18 +21,33 @@ async function create_listing(data) {
   let seller = data["seller"];
   let [bidder, price] = data["current_bid"];
   let id = data["id"];
+  let finished =
+    new Date(data["creation_date"]).getTime() + data["length"] < Date.now();
   let div = document.createElement("div");
-  div.innerHTML = ` Item name: <strong>${item_name}</strong></br> Highest bid: <strong>$${price}, ${bidder}</strong> </br> Seller: <strong>${seller}</strong>  `;
+  let img = document.createElement("img");
+  img.setAttribute("src", "public/images/" + data["image_path"]);
+  div.innerHTML = ` Item: <strong>${item_name}</strong></br> Highest bid: <strong>$${price}, by ${bidder}</strong> </br> Seller: <strong>${seller}</strong>  `;
 
   let button = document.createElement("button");
   button.innerHTML = "To Auction";
-  button.setAttribute("id", "listing-button");
-  button.onclick = async () => {
+  let attr;
+  if (finished) {
+    attr = "listing-button-done";
+  } else {
+    attr = "listing-button-in-progress";
+  }
+  button.setAttribute("id", attr);
+  button.onclick = function () {
+    console.log("clicked.");
     var host = window.location.protocol + "//" + window.location.host;
     window.location.href = host + "/auction-page?id=" + id;
   };
+  div.setAttribute("class", "listing-item");
   div.appendChild(button);
   div.innerHTML += "</br>";
+  img.setAttribute("style", "width:100%; height:auto;");
+  div.appendChild(img);
+
   return div;
 }
 
@@ -149,6 +165,7 @@ async function display_auction() {
       } else {
         document.getElementById("time_left").innerText = "";
         document.getElementById("time_left_prompt").innerText = "Auction over!";
+        curr_auction_done = true;
       }
     }
   };
@@ -182,6 +199,7 @@ function countdown(expiration) {
   if (timeLeft < 0) {
     document.getElementById("time_left").innerText = "";
     document.getElementById("time_left_prompt").innerText = "Auction over!";
+    curr_auction_done = true;
     return;
   }
 
@@ -217,7 +235,7 @@ function convertMS(ms) {
 }
 
 async function send_data_and_update() {
-  let user = await cookie_fetch("username");
+  let user = cookie_fetch("username");
   let bid = document.getElementById("input2").value;
   let url = window.location.search;
   let urlParams = new URLSearchParams(url);
@@ -244,6 +262,9 @@ async function send_data_and_update() {
     return;
   } else if (num_check(bid) == false) {
     error.innerText = "Error, please enter a number";
+    return;
+  } else if (curr_auction_done) {
+    error.innerText = "You can't bid on a completed auction! 😔";
     return;
   }
 
