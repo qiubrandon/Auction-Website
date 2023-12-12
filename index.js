@@ -16,12 +16,13 @@ const process = require("process");
 const nodemailer = require("nodemailer");
 const uuid = require("uuid");
 const expressWs = require("express-ws")(app);
+const WebSocket = require("ws");
 
 //port
 const port = 8000;
 
 //websocket connections
-connected = [];
+let connected = new Set();
 
 // middlewares
 const setHeaders = function (req, res, next) {
@@ -385,9 +386,15 @@ app.get("/", (req, res) => {
 });
 
 app.ws("/", async (ws, req) => {
-  connected.push(ws);
+  connected.add(ws);
+  console.log("ws connected! currently conns:", connected);
   ws.on("close", () => {
-    connected = connected.filter((client) => client !== ws);
+    console.log("ws dc'd! dc'd conn:", ws);
+    connected.delete(ws);
+  });
+
+  ws.on("error", (err) => {
+    console.log("error with websocket conn!", err);
   });
 }); // default page ws
 

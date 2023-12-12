@@ -19,13 +19,13 @@ async function welcome() {
 async function create_listing(data) {
   let item_name = data["item_name"];
   let seller = data["seller"];
+  console.log("HIGHEST BID", data["current_bid"]);
   let [bidder, price] = data["current_bid"];
   let id = data["id"];
   let finished =
     new Date(data["creation_date"]).getTime() + data["length"] < Date.now();
   let div = document.createElement("div");
   let img = document.createElement("img");
-  img.setAttribute("src", "public/images/" + data["image_path"]);
   div.innerHTML = ` Item: <strong>${item_name}</strong></br> Highest bid: <strong>$${price}, by ${bidder}</strong> </br> Seller: <strong>${seller}</strong>  `;
 
   let button = document.createElement("button");
@@ -43,8 +43,9 @@ async function create_listing(data) {
     window.location.href = host + "/auction-page?id=" + id;
   };
   div.setAttribute("class", "listing-item");
-  div.appendChild(button);
+  img.setAttribute("src", "public/images/" + data["image_path"]);
   div.innerHTML += "</br>";
+  div.appendChild(button);
   img.setAttribute("style", "width:100%; height:auto;");
   div.appendChild(img);
 
@@ -52,17 +53,15 @@ async function create_listing(data) {
 }
 
 async function openConn(path) {
-  const socket = new WebSocket(
-    "ws://" + window.location.hostname + ":" + window.location.port + path
-  );
+  const socket = new WebSocket("wss://" + window.location.hostname + path);
 
   socket.addEventListener("open", async () => {
     console.log("websocket connection opened!");
   });
   socket.addEventListener("message", async (event) => {
-    const data = event.data;
+    const data = await event.data;
     console.log("new auction made!", data);
-    let new_div = await create_listing(data);
+    let new_div = await create_listing(JSON.parse(data));
     document.getElementById("listings").append(new_div);
   });
   socket.addEventListener("close", () => {

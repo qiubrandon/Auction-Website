@@ -130,3 +130,16 @@ body {
   height: auto; /* Height is auto to adjust based on content */
   padding-left: 5px;
 }
+
+.listing-item img {
+  visibility: hidden; /* Image is not visible initially */
+  opacity: 0; /* Image is fully transparent */
+  max-height: 0; /* Image takes no vertical space */
+  overflow: hidden; /* Ensures content doesn't spill outside max-height */
+}
+
+.listing-item:hover img {
+  visibility: visible; /* Image becomes visible on hover */
+  opacity: 1; /* Image becomes fully opaque */
+  max-height: 500px; /* Adjust max-height to fit the image's natural height */
+}
