@@ -65,7 +65,7 @@ body {
   overflow: scroll;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   justify-content: flex-start;
   /*flex-grow: 1;*/
 }
@@ -96,17 +96,17 @@ body {
 #listing-button-done {
   display: flex;
   justify-content: flex-end;
-  background-color: red; /* Button background color */
-  color: white; /* Text color */
-  border: none; /* Remove default border */
-  padding: 5px 10px; /* Vertical and horizontal padding */
-  text-align: center; /* Center the text */
-  text-decoration: none; /* Remove underline from text */
-  display: inline-block; /* Align it inline with other elements */
-  font-size: 16px; /* Set font size */
-  border-radius: 15px; /* Rounded corners */
-  cursor: pointer; /* Change mouse cursor on hover */
-  transition: background-color 0.3s; /* Smooth transition for hover effect */
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 .listing-button:hover {
   background-color: darkgreen; /* Darker shade when hovered */

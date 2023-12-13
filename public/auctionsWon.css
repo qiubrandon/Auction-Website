@@ -15,8 +15,7 @@ h3 {
 .header,
 .contents,
 .chat,
-.user-list,
-.listings {
+.user-list {
   color: black;
   background-color: white;
   text-align: center;
@@ -65,4 +64,55 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+#listing-button-done {
+  display: flex;
+  justify-content: flex-end;
+  background-color: red; /* Button background color */
+  color: white; /* Text color */
+  border: none; /* Remove default border */
+  padding: 5px 10px; /* Vertical and horizontal padding */
+  text-align: center; /* Center the text */
+  text-decoration: none; /* Remove underline from text */
+  display: inline-block; /* Align it inline with other elements */
+  font-size: 16px; /* Set font size */
+  border-radius: 15px; /* Rounded corners */
+  cursor: pointer; /* Change mouse cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+.listing-button:hover {
+  background-color: darkgreen; /* Darker shade when hovered */
+}
+#listings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Adjust the gap between boxes as needed */
+  justify-content: flex-start; /* Aligns items to the start of the container */
+  align-items: flex-start; /* Aligns items to the start of their line */
+}
+
+.listing-item {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adds a subtle shadow to each box */
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd; /* Adds a light border */
+  border-radius: 5px; /* Rounded corners */
+  background-color: white; /* Background color */
+  width: 200px; /* Adjust the width as needed */
+  height: auto; /* Height is auto to adjust based on content */
+  padding-left: 5px;
+}
+
+.listing-item img {
+  visibility: hidden; /* Image is not visible initially */
+  opacity: 0; /* Image is fully transparent */
+  max-height: 0; /* Image takes no vertical space */
+  overflow: hidden; /* Ensures content doesn't spill outside max-height */
+}
+
+.listing-item:hover img {
+  visibility: visible; /* Image becomes visible on hover */
+  opacity: 1; /* Image becomes fully opaque */
+  max-height: 500px; /* Adjust max-height to fit the image's natural height */
 }

@@ -429,34 +429,8 @@ async function put_listings(won) {
     return;
   }
 
-  await listing_loop(listings);
-}
-
-async function listing_loop(listings) {
-  let id = 1;
-  let listings_html = document.getElementById("listings");
-  for (let [key, value] in Object.entries(listings)) {
-    console.log("key", key);
-    console.log("value", value);
-    let item = listings[key];
-    let div = document.createElement("div");
-    div.id = "item-" + id;
-    let item_name = item["item_name"];
-    console.log(item_name);
-    let desc = item["description"];
-    console.log(desc);
-    let item_id = item["id"];
-
-    div.innerHTML = `Item name: ${item_name}</br>Desc: ${desc} `;
-
-    let button = document.createElement("button");
-    button.innerHTML = "To Auction";
-    button.onclick = async () => {
-      var host = window.location.protocol + "//" + window.location.host;
-      window.location.href = host + "/auction-page?id=" + item_id;
-    };
-    div.appendChild(button);
-    listings_html.appendChild(div);
-    id += 1;
+  for (let listing of listings) {
+    let div = await create_listing(listing);
+    document.getElementById("listings").appendChild(div);
   }
 }

@@ -304,19 +304,9 @@ async function getAllItems() {
 
 async function getUserWonAuctions(user) {
   try {
-    let auctions = await getUserCreatedAuctions(user);
-    let won = [];
-    for (let auction of auctions) {
-      console.log("Curr auctio", auction);
-      console.log("Creation date", new Date(auction["creation_date"]));
-      console.log("Won length", auction["length"]);
-      let converted_length =
-        new Date(auction["creation_date"]).getTime() + auction["length"];
-      if (converted_length < Date.now()) {
-        won.push(auction);
-      }
-    }
-    return won;
+    //i want to find search for an element within an array
+    let auctions = await Auctions.find({ current_bid: user });
+    return auctions;
   } catch (error) {
     console.log("Error", error);
   }
@@ -397,6 +387,8 @@ app.ws("/", async (ws, req) => {
     console.log("error with websocket conn!", err);
   });
 }); // default page ws
+
+//app.ws("/new-bid")
 
 app.get("/user_check", (req, res) => {
   const username = req.cookies["username"];
