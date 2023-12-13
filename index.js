@@ -488,7 +488,9 @@ app.post("/register", async (req, res) => {
       return res.status(400).send("Username already exists!"); // if user exists, throw this err
     }
     regEm = await add_new_user(name, password); // idk if await should be there
-    sendEmail(email, password, name);
+    if(email){
+      sendEmail(email, password, name);
+    }
     res.cookie("verified", "Not Verified", {
       maxAge: 3600000, // one hour in milliseconds
       sameSite: "strict",
@@ -496,9 +498,12 @@ app.post("/register", async (req, res) => {
     // if (sendEmail(email,password,name) == 0) {
     //   res.status(400).send('Email already registered')}
     // else if (sendEmail(email,password,name) == 1){
-    res.send(
-      "Registration successful. Check your email for verification instructions."
-    );
+    if (email){
+    res.send("Registration successful. Check your email for verification instructions.");
+    }
+    else{
+      res.send("Registration successful.");
+    }
     // }
   } catch (error) {
     console.error("Error occurred:", error); // log error for debugging
