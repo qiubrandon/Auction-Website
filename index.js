@@ -19,7 +19,7 @@ const expressWs = require("express-ws")(app);
 const WebSocket = require("ws");
 
 //port
-const port = 8000;
+const port = 8080;
 
 //websocket connections
 let connected = new Set();
