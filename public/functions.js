@@ -250,7 +250,8 @@ async function send_data_and_update() {
     bid: bid,
     id: id,
   };
-
+  let seller = document.getElementById("item_owner").innerText.split(" ")[1]
+  console.log(seller)
   let error = document.getElementById("error_form");
   if (!user || !bid) {
     error.innerText = "Error, not signed in or empty field";
@@ -264,6 +265,10 @@ async function send_data_and_update() {
     return;
   } else if (curr_auction_done) {
     error.innerText = "You can't bid on a completed auction! 😔";
+    return;
+  }
+  else if(user == seller){
+    error.innerText = "You cant bid on your own item";
     return;
   }
 
