@@ -34,14 +34,15 @@ const setHeaders = function (req, res, next) {
   res.set("X-Content-Type-Options", "nosniff");
   next();
 };
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/images/"); // no callback
+    cb(null, "public/images/");
   },
   filename: function (req, file, cb) {
     const originalNameWithoutExt = path.basename(
       file.originalname,
-      path.extname(file.originalname).replace("/", "")
+      path.extname(file.originalname)
     );
 
     cb(
@@ -51,9 +52,11 @@ const storage = multer.diskStorage({
   },
 });
 
-const img_save = multer({
+const img_save = multer({ 
   storage: storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // Limit of 2MB
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB limit
+  }
 });
 
 const limited_users = {};
