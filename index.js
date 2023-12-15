@@ -34,15 +34,14 @@ const setHeaders = function (req, res, next) {
   res.set("X-Content-Type-Options", "nosniff");
   next();
 };
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/images/");
+    cb(null, "public/images/"); // no callback
   },
   filename: function (req, file, cb) {
     const originalNameWithoutExt = path.basename(
       file.originalname,
-      path.extname(file.originalname)
+      path.extname(file.originalname).replace("/", "")
     );
 
     cb(
@@ -52,11 +51,9 @@ const storage = multer.diskStorage({
   },
 });
 
-const img_save = multer({ 
+const img_save = multer({
   storage: storage,
-  limits: {
-    fileSize: 50 * 1024 * 1024, // 50MB limit
-  }
+  limits: { fileSize: 2 * 1024 * 1024 }, // Limit of 2MB
 });
 
 const limited_users = {};
@@ -541,7 +538,6 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/settled-auctions", async (req, res) => {
-  Auctions.deleteMany({});
   const all = await Auctions.find();
   res.send(JSON.stringify(all));
 });
