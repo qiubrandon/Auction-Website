@@ -541,6 +541,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/settled-auctions", async (req, res) => {
+  Auctions.deleteMany({});
   const all = await Auctions.find();
   res.send(JSON.stringify(all));
 });
